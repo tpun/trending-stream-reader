@@ -1,16 +1,19 @@
 # Rakefile for the NOWBOX StreamReader.
 
 task :environment do
-  config_file = "./config.yml"
+  config_file = "./config.json"
+
+  require './lib/stream_reader'
+
   @settings = if File.exists? config_file
-                YAML.decode File.read "./config.yml"
+                 Yajl::Parser.parse File.read config_file
               else
                 ENV
               end
 end
 
 task :read => :environment do
-  require './lib/stream_reader'
+  p @settings
 
   stream_reader = StreamReader.new(
     @settings['CONSUMER_KEY'],
