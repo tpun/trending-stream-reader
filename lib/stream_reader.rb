@@ -1,8 +1,8 @@
-require 'bundler'
-Bundler.require
+require 'yajl'
+require 'tweetstream'
 
 class StreamReader
-  def initialize consumer_key, consumer_secret, token, token_secret
+  def initialize consumer_key, consumer_secret, token, token_secret, queue
     TweetStream.configure do |c|
       c.consumer_key = consumer_key
       c.consumer_secret = consumer_secret
@@ -12,7 +12,10 @@ class StreamReader
       c.parser = :yajl
     end
 
+    @keywords = ['http', 'youtube http']
+    @queue = queue
     @client = TweetStream::Client.new
+
     set_limit
     set_error
     set_delete
@@ -42,10 +45,12 @@ class StreamReader
     end
   end
 
-  # Start tracking links specifically youtube links if available.
+  # Start tracking links specifically youtube links if available. If a block is
+  # given, processing will be delegated to that block otherwise the tweet will
+  # be printed to the log.
   def start
-    @client.track('http', 'youtube http') do |tweet|
-      puts "Enqueuing tweet #{tweet.id}"
+    @client.track(@keywords) do |tweet|
+      @queue.enqueue tweet
     end
   end
 end
