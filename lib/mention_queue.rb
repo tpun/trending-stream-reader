@@ -2,7 +2,6 @@ require 'hiredis'
 require 'redis'
 require 'resque'
 require 'uri'
-require 'pry'
 
 class MentionQueue
   def initialize redis_uri, channel_id
