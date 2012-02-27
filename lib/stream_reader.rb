@@ -2,7 +2,7 @@ require 'yajl'
 require 'tweetstream'
 
 class StreamReader
-  def initialize consumer_key, consumer_secret, token, token_secret, queue
+  def initialize consumer_key, consumer_secret, token, token_secret, queue_class
     TweetStream.configure do |c|
       c.consumer_key = consumer_key
       c.consumer_secret = consumer_secret
@@ -12,8 +12,8 @@ class StreamReader
       c.parser = :yajl
     end
 
-    @keywords = ['http', 'youtube http']
-    @queue = queue
+    @keywords = ['youtube http']
+    @queue_class = queue_class
     @client = TweetStream::Client.new
 
     set_limit
@@ -50,7 +50,7 @@ class StreamReader
   # be printed to the log.
   def start
     @client.track(@keywords) do |tweet|
-      @queue.enqueue tweet
+      Resque.enqueue @queue_class, tweet
     end
   end
 end

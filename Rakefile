@@ -1,8 +1,17 @@
-# Rakefile for the NOWBOX StreamReader.
+require 'resque/tasks'
+require 'resque_scheduler/tasks'
 
 task :environment do
-  require './lib/stream_reader'
-  require './lib/mention_queue'
+  require 'pry'
+  require 'redis'
+  require 'resque'
+  require 'resque_scheduler'
+
+  require_relative 'lib/stream_reader'
+  Dir.glob("models/*.rb").each { |r| require_relative r }
+  Dir.glob("queues/*.rb").each { |r| require_relative r }
+  Dir.glob("queues/mention/*.rb").each { |r| require_relative r }
+  Dir.glob("queues/trending/*.rb").each { |r| require_relative r }
 
   config_file = "./config.json"
   @settings = if File.exists? config_file
@@ -10,21 +19,30 @@ task :environment do
               else
                 ENV
               end
+  uri = URI @settings['REDISTOGO_URL']
+  @redis = Redis.new(
+    host: uri.host,
+    port: uri.port,
+    password: uri.password,
+    db: uri.path[1..-1])
+  Resque.redis = @redis
 end
 
-task :read => :environment do
-  mention_queue = MentionQueue.new(
-    @settings['REDISTOGO_URL'],
-    @settings['CHANNEL_ID']
-  )
+task "resque:setup" => :environment
 
+task :readstream => :environment do
   stream_reader = StreamReader.new(
     @settings['CONSUMER_KEY'],
     @settings['CONSUMER_SECRET'],
     @settings['OAUTH_TOKEN'],
     @settings['OAUTH_SECRET'],
-    mention_queue
+    Queues::Mention::Process
   )
 
   stream_reader.start
+end
+
+task :c => :console
+task :console => :environment do
+  Pry.start
 end
