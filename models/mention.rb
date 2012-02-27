@@ -1,13 +1,15 @@
+require 'time'
+
 module Aji
   class Mention
     attr_reader :raw, :source, :uid
-    attr_reader :video, :author
+    attr_reader :author, :video
 
     def initialize raw, source='twitter'
       @raw = raw
       @source = source
-
       @uid = @raw["id_str"]
+      @created_at = Time.parse @raw["created_at"]
       @author = Author.new @raw["user"]["id_str"], @source
 
       url_entity = @raw["entities"]["urls"].first
@@ -16,7 +18,7 @@ module Aji
       @video_source = video_link.type
 
       @video = Video.new @video_uid, @video_source
-      @video.mentioned_by @author
+      @video.mentioned_by @author, @uid, @created_at
     end
 
     def spam?
