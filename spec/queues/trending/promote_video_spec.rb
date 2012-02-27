@@ -1,13 +1,14 @@
 require_relative '../../../app.rb'
+include Aji::Queues::Trending
 
-describe Queues::Trending::PromoteVideo do
-  subject { Queues::Trending::PromoteVideo }
+describe PromoteVideo do
+  subject { PromoteVideo }
   let(:tweet) { mock }
   let(:mention) {
     mock.tap do |m|
       Mention.stub(:new).with(tweet).and_return(m)
       m.stub :spam? => false
-      m.stub :video => mock
+      m.stub :video => mock(:external_id => 'abc')
       m.stub :significance => 1000
     end
   }
@@ -27,7 +28,8 @@ describe Queues::Trending::PromoteVideo do
 
     it "updates trending channel with given mention" do
       trending.should_receive(:promote_video).
-        with(mention.video, mention.significance)
+        with( mention.video.external_id,
+              mention.significance)
 
       subject.perform tweet
     end

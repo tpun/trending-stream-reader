@@ -1,2 +1,4 @@
-class Mention
+module Aji
+  class Mention
+  end
 end

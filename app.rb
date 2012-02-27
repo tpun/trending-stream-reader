@@ -10,16 +10,22 @@ Dir.glob("queues/*.rb").each { |r| require_relative r }
 Dir.glob("queues/mention/*.rb").each { |r| require_relative r }
 Dir.glob("queues/trending/*.rb").each { |r| require_relative r }
 
-config_file = "./config.json"
-@settings = if File.exists? config_file
-               Yajl::Parser.parse File.read config_file
-            else
-              ENV
-            end
-uri = URI @settings['REDISTOGO_URL']
-@redis = Redis.new(
-  host: uri.host,
-  port: uri.port,
-  password: uri.password,
-  db: uri.path[1..-1])
-Resque.redis = @redis
+module Aji
+  def Aji.settings
+    config_file = "./config.json"
+    @settings ||= if File.exists? config_file
+                     Yajl::Parser.parse File.read config_file
+                  else
+                    ENV
+                  end
+  end
+
+  def Aji.redis
+    uri = URI Aji.settings['REDISTOGO_URL']
+    @redis ||= Redis.new( host: uri.host,
+                          port: uri.port,
+                          password: uri.password,
+                          db: uri.path[1..-1] )
+  end
+  Resque.redis = Aji.redis
+end

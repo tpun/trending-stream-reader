@@ -8,12 +8,12 @@ end
 task "resque:setup" => :environment
 
 task :readstream => :environment do
-  stream_reader = StreamReader.new(
-    @settings['CONSUMER_KEY'],
-    @settings['CONSUMER_SECRET'],
-    @settings['OAUTH_TOKEN'],
-    @settings['OAUTH_SECRET'],
-    Queues::Trending::PromoteVideo
+  stream_reader = Aji::StreamReader.new(
+    Aji.settings['CONSUMER_KEY'],
+    Aji.settings['CONSUMER_SECRET'],
+    Aji.settings['OAUTH_TOKEN'],
+    Aji.settings['OAUTH_SECRET'],
+    Aji::Queues::Trending::PromoteVideo
   )
 
   stream_reader.start
