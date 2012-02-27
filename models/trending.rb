@@ -11,5 +11,9 @@ module Aji
     def promote_video mention
       Aji.redis.zincrby key, mention.significance, mention.video.uid
     end
+
+    def video_uids limit=0
+      (Aji.redis.zrevrange key, 0, (limit-1)).map(&:to_i)
+    end
   end
 end
