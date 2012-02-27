@@ -7,3 +7,4 @@ gem "yajl-ruby"
 gem "tweetstream"
 gem 'resque-scheduler'
 gem 'pry'
+gem 'rspec'
