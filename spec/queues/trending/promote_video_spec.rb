@@ -8,7 +8,7 @@ describe PromoteVideo do
     mock.tap do |m|
       Mention.stub(:new).with(tweet).and_return(m)
       m.stub :spam? => false
-      m.stub :video => mock(:external_id => 'abc')
+      m.stub :video => mock(:uid => 'abc', :source => 'youtube')
       m.stub :significance => 1000
     end
   }
@@ -27,9 +27,7 @@ describe PromoteVideo do
     end
 
     it "updates trending channel with given mention" do
-      trending.should_receive(:promote_video).
-        with( mention.video.external_id,
-              mention.significance)
+      trending.should_receive(:promote_video).with(mention)
 
       subject.perform tweet
     end

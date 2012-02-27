@@ -8,8 +8,8 @@ module Aji
           mention = Aji::Mention.new tweet
           return if mention.spam?
 
-          trending = Aji::Trending.new
-          trending.promote_video mention.video.external_id, mention.significance
+          trending = Aji::Trending.new mention.video.source
+          trending.promote_video mention
         end
       end
     end

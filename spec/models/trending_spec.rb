@@ -13,14 +13,16 @@ describe Trending do
   end
 
   describe "#promote_video" do
-    let(:video_external_id) { 'abc' }
-    let(:significance) { 100 }
+    let(:video) { mock(:uid => 'abc') }
+    let(:mention) { mock( :video => video,
+                          :significance => 100,
+                          :author_uid => 200 )}
 
     it "increments given external id by given significance" do
       Aji.redis.should_receive(:zincrby).with(
-        subject.key, significance, video_external_id)
+        subject.key, mention.significance, mention.video.uid)
 
-      subject.promote_video video_external_id, significance
+      subject.promote_video mention
     end
 
     it "only keeps a maximum number of videos"

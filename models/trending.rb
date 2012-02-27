@@ -8,8 +8,8 @@ module Aji
       "trending::#{@video_source}"
     end
 
-    def promote_video video_external_id, significance
-      Aji.redis.zincrby key, significance, video_external_id
+    def promote_video mention
+      Aji.redis.zincrby key, mention.significance, mention.video.uid
     end
   end
 end

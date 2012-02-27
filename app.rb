@@ -3,6 +3,7 @@ require 'pry'
 require 'redis'
 require 'resque'
 require 'resque_scheduler'
+require 'active_support/core_ext/object'
 
 require_relative 'lib/stream_reader'
 Dir.glob("models/*.rb").each { |r| require_relative r }
@@ -28,4 +29,11 @@ module Aji
                           db: uri.path[1..-1] )
   end
   Resque.redis = Aji.redis
+
+  RSpec.configure do |config|
+    config.before :each do
+      Aji.redis.flushdb
+    end
+  end
 end
+
