@@ -10,17 +10,17 @@ module Aji
       @key ||= "video:#{@source}[#{@uid}]:mentioner_uids"
     end
 
-    def spammed_by? mentioner_uid
-      mention_count(mentioner_uid) > 2
+    def spammed_by? mentioner
+      mention_count(mentioner) > 2
     end
 
-    def mentioned mentioner_uid
-      Aji.redis.zincrby key, 1, mentioner_uid
+    def mentioned mentioner
+      Aji.redis.zincrby key, 1, mentioner.uid
       Aji.redis.expire key, 6.hours
     end
 
-    def mention_count mentioner_uid
-      (Aji.redis.zscore(key, mentioner_uid)).to_i
+    def mention_count mentioner
+      (Aji.redis.zscore(key, mentioner.uid)).to_i
     end
   end
 end

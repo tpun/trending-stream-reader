@@ -1,6 +1,6 @@
 module Aji
   class Mention
-    attr_reader :raw, :source, :uid, :author_uid
+    attr_reader :raw, :source, :uid
     attr_reader :video, :author
 
     def initialize raw, source='twitter'
@@ -16,11 +16,11 @@ module Aji
       @video_source = video_link.type
 
       @video = Video.new @video_uid, @video_source
-      @video.mentioned @author.uid
+      @video.mentioned @author
     end
 
     def spam?
-      @video.spammed_by? @author_uid
+      @video.spammed_by? @author
     end
   end
 end
