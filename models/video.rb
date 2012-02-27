@@ -12,9 +12,9 @@ module Aji
       mention_count(mentioner) > 2
     end
 
-    def mentioned_by mentioner, mention_uid, mention_at=Time.now
-      Aji.redis.zincrby @keys[:mentioner_uids], 1, mentioner.uid
-      Aji.redis.zadd @keys[:mention_uids], mention_at.to_i, mention_uid
+    def mentioned_in mention
+      Aji.redis.zincrby @keys[:mentioner_uids], 1, mention.author.uid
+      Aji.redis.zadd @keys[:mention_uids], mention.created_at.to_i, mention.uid
       expire_keys
     end
 
