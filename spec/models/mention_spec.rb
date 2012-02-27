@@ -8,9 +8,8 @@ describe Mention do
   subject { Mention.new raw }
 
   describe ".initialize" do
-    it "sets uid and author_uid" do
+    it "sets uid" do
       subject.uid.should == "174046337262825472"
-      subject.author_uid.should == "476049083"
     end
 
     let(:video) { mock }
@@ -18,6 +17,12 @@ describe Mention do
       Video.stub(:new).and_return(video)
 
       video.should_receive(:mentioned).with(subject.author_uid).once
+    end
+  end
+
+  describe "#author" do
+    it "parses out the user id" do
+      subject.author.uid.should == "476049083"
     end
   end
 
