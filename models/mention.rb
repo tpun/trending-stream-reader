@@ -16,7 +16,7 @@ module Aji
       @video_source = video_link.type
 
       @video = Video.new @video_uid, @video_source
-      @video.mentioned @author
+      @video.mentioned_by @author
     end
 
     def spam?

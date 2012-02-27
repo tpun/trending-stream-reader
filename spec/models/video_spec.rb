@@ -8,7 +8,7 @@ describe Video do
 
   describe "#spammed_by?" do
     it "returns true if given mentioner has mentioned given video more than twice" do
-      3.times { subject.mentioned spammer }
+      3.times { subject.mentioned_by spammer }
 
       subject.should be_spammed_by(spammer)
     end
@@ -18,14 +18,14 @@ describe Video do
     end
   end
 
-  describe "#mentioned" do
+  describe "#mentioned_by" do
     it "adds given mentioner to the list" do
-      expect { subject.mentioned(nonspammer) }.
+      expect { subject.mentioned_by(nonspammer) }.
         to change { subject.mention_count(nonspammer) }.by(1)
     end
 
     it "sets an expiry date on the key" do
-      subject.mentioned nonspammer
+      subject.mentioned_by nonspammer
 
       Aji.redis.ttl(subject.key).should > 0
     end
@@ -34,7 +34,7 @@ describe Video do
   describe "#mention_count" do
     let(:count) { 3 }
     it "returns count of number of mentions from the mentioner" do
-      count.times { subject.mentioned(spammer) }
+      count.times { subject.mentioned_by(spammer) }
 
       subject.mention_count(spammer).should == count
     end

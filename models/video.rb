@@ -14,7 +14,7 @@ module Aji
       mention_count(mentioner) > 2
     end
 
-    def mentioned mentioner
+    def mentioned_by mentioner
       Aji.redis.zincrby key, 1, mentioner.uid
       Aji.redis.expire key, 6.hours
     end
