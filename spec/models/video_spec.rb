@@ -47,6 +47,7 @@ describe Video do
 
     it "returns count of all mentions if mentioner is absent" do
       subject.mentioned_in mention
+      # different mention with different author
       mention.stub :author => Author.new('blah', 'twitter')
       mention.stub :uid => 456
       subject.mentioned_in mention
