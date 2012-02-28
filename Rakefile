@@ -27,3 +27,7 @@ end
 task :spec => :environment do
   system "rspec spec"
 end
+
+task :resqueweb=> :environment do
+  system "resque-web"
+end

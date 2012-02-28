@@ -1,0 +1,5 @@
+trending_refresh:
+  class: Aji::Queues::Trending::Refresh
+  cron: "*/15 * * * *"
+  args: "youtube"
+  description: "Update trending channel"

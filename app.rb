@@ -5,6 +5,7 @@ require 'resque'
 require 'resque_scheduler'
 require 'active_support/core_ext/object'
 require 'logger'
+require 'yaml'
 
 require_relative 'lib/stream_reader'
 Dir.glob("models/*.rb").each { |r| require_relative r }
@@ -14,12 +15,19 @@ Dir.glob("queues/trending/*.rb").each { |r| require_relative r }
 
 module Aji
   def Aji.settings
-    config_file = "./config.json"
-    @settings ||= if File.exists? config_file
-                     Yajl::Parser.parse File.read config_file
-                  else
-                    ENV
-                  end
+    unless @settings
+      @settings = {}.tap do |setting|
+        setting_file = "./config/settings.yml"
+        resque_schedule_file = "./config/resque_schedule.yml"
+        if File.exists? setting_file
+          setting.merge! YAML.load_file(setting_file)
+          setting['RESQUE_SCHEDULE'] = YAML.load_file resque_schedule_file
+        else
+          setting.merge! ENV
+        end
+      end
+    end
+    @settings
   end
 
   def Aji.redis
@@ -30,6 +38,7 @@ module Aji
                           db: uri.path[1..-1] )
   end
   Resque.redis = Aji.redis
+  Resque.schedule = Aji.settings['RESQUE_SCHEDULE']
 
   RSpec.configure do |config|
     config.before :each do

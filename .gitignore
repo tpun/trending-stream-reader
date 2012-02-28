@@ -1,3 +1,4 @@
 .DS_Store
 .bundle
-config.json
+config/settings.yml
+config/resque_schedule.yml
