@@ -54,7 +54,7 @@ module Aji
       @client.track(@keywords) do |tweet|
         Resque.enqueue @queue_class, tweet
         count +=1
-        Aji.log.info "Enqueued #{count} tweets" if count % 10 == 0
+        Aji.log.info "Enqueued #{count} tweets" if count % 1000 == 0
       end
     end
   end
