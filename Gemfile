@@ -8,3 +8,4 @@ gem "tweetstream"
 gem 'resque-scheduler'
 gem 'pry'
 gem 'rspec'
+gem "activesupport"
