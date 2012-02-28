@@ -26,14 +26,14 @@ module Aji
     # regulate us on their end. We just log how many we missed.
     def set_limit
       @client.on_limit do |tweets_skipped|
-        puts "Missed #{tweets_skipped} due to rate limiting."
+        Aji.log.info "Missed #{tweets_skipped} due to rate limiting."
       end
     end
 
     # What to do when an error occurs. For now we just log it.
     def set_error
       @client.on_error do |message|
-        $stderr.puts "ERROR: #{message}"
+        Aji.log.error.puts "ERROR: #{message}"
       end
     end
 
@@ -42,7 +42,7 @@ module Aji
     # timely manner and if we don't then somehow bad things?
     def set_delete
       @client.on_delete do |status_id, user_id|
-        puts "App should delete status:#{status_id} from user:#{user_id}"
+        Aji.log.debug "App should delete status:#{status_id} from user:#{user_id}"
       end
     end
 
@@ -50,8 +50,11 @@ module Aji
     # given, processing will be delegated to that block otherwise the tweet will
     # be printed to the log.
     def start
+      count = 0
       @client.track(@keywords) do |tweet|
         Resque.enqueue @queue_class, tweet
+        count +=1
+        Aji.log.info "Enqueued #{count} tweets" if count % 10 == 0
       end
     end
   end
