@@ -49,4 +49,11 @@ describe Mention do
       subject.should_not be_spam
     end
   end
+
+  describe "#significance" do
+    it "is a positive number" do
+      subject.significance.should > 0
+    end
+  end
+
 end
