@@ -11,7 +11,7 @@ describe Refresh do
     it "refreshes trending channel" do
       trending.should_receive(:refresh).once
 
-      subject.perform
+      subject.perform 'youtube'
     end
   end
 end
