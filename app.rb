@@ -24,7 +24,7 @@ module Aji
           setting['RESQUE_SCHEDULE'] = YAML.load_file resque_schedule_file
         else
           setting.merge! ENV
-          setting['RESQUE_SCHEDULE'] = YAML.load_file setting['RESQUE_SCHEDULE']
+          setting['RESQUE_SCHEDULE'] = YAML.load setting['RESQUE_SCHEDULE']
         end
       end
     end
