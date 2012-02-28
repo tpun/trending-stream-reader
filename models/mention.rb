@@ -12,7 +12,12 @@ module Aji
       @created_at = Time.parse @raw["created_at"]
       @author = Author.new @raw["user"]["id_str"], @source
 
-      url_entity = @raw["entities"]["urls"].first
+      # check retweet status first
+      if @raw["retweeted_status"]
+        url_entity = @raw["retweeted_status"]["entities"]["urls"].first
+      else
+        url_entity = @raw["entities"]["urls"].first
+      end
       video_link = Link.new url_entity["expanded_url"]
       @video_uid = video_link.external_id
       @video_source = video_link.type
