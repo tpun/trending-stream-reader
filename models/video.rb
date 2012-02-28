@@ -27,5 +27,7 @@ module Aji
         Aji.redis.expire key, ttl
       end
     end
+
+    private :expire_keys
   end
 end
