@@ -24,7 +24,12 @@ module Aji
     end
 
     def to_s
-      "#{@source}[#{@uid}], #{mention_count} mentions ()"
+      ages = []
+      Aji.redis.zrevrange(@keys[:mention_uids], 0, 5).each do |mid|
+        time = (Aji.redis.zscore @keys[:mention_uids], mid).to_i
+        ages << (Time.now.to_i - time)
+      end
+      "#{@source}[#{@uid}], #{mention_count} mentions (#{ages.join(', ')})"
     end
 
     def expire_keys ttl=6.hours
