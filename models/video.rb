@@ -18,8 +18,13 @@ module Aji
       expire_keys
     end
 
-    def mention_count mentioner
-      (Aji.redis.zscore(@keys[:mentioner_uids], mentioner.uid)).to_i
+    def mention_count mentioner=nil
+      return (Aji.redis.zscore(@keys[:mentioner_uids], mentioner.uid)).to_i if mentioner
+      Aji.redis.zcard @keys[:mention_uids]
+    end
+
+    def to_s
+      "#{@source}[#{@uid}], #{mention_count} mentions ()"
     end
 
     def expire_keys ttl=6.hours

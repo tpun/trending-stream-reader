@@ -37,9 +37,21 @@ describe Video do
   describe "#mention_count" do
     let(:count) { 3 }
     it "returns count of number of mentions from the mentioner" do
-      count.times { subject.mentioned_in mention }
+      count.times do |n|
+        mention.stub :uid => n
+        subject.mentioned_in mention
+      end
 
       subject.mention_count(mention.author).should == count
+    end
+
+    it "returns count of all mentions if mentioner is absent" do
+      subject.mentioned_in mention
+      mention.stub :author => Author.new('blah', 'twitter')
+      mention.stub :uid => 456
+      subject.mentioned_in mention
+
+      subject.mention_count.should == 2
     end
   end
 
