@@ -24,5 +24,9 @@ module Aji
     def spam?
       @video.spammed_by? @author
     end
+
+    def significance
+      10000
+    end
   end
 end
