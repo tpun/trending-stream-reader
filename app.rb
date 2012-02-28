@@ -4,6 +4,7 @@ require 'redis'
 require 'resque'
 require 'resque_scheduler'
 require 'active_support/core_ext/object'
+require 'logger'
 
 require_relative 'lib/stream_reader'
 Dir.glob("models/*.rb").each { |r| require_relative r }
@@ -34,6 +35,14 @@ module Aji
     config.before :each do
       Aji.redis.flushdb
     end
+  end
+
+  def Aji.log
+    if @logger.nil?
+      @logger = ::Logger.new STDERR
+      @logger.level = ::Logger::DEBUG
+    end
+    @logger
   end
 end
 
