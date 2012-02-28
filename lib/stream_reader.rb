@@ -51,8 +51,6 @@ module Aji
     # be printed to the log.
     def start
       @client.track(@keywords) do |tweet|
-puts "tweet: #{tweet}"
-puts ""
         Resque.enqueue @queue_class, tweet
       end
     end
