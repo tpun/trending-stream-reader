@@ -27,4 +27,9 @@ describe Trending do
 
     it "only keeps a maximum number of videos"
   end
+
+  describe "#refresh" do
+    it "decays all existing videos"
+    it "removes old videos"
+  end
 end

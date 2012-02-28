@@ -4,8 +4,9 @@ module Aji
       class Refresh
         @queue = :trending
 
-        def self.perform args
-          puts "refreshed"
+        def self.perform
+          trending = Aji::Trending.new 'youtube'
+          trending.refresh
         end
       end
     end
