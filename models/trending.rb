@@ -50,9 +50,8 @@ module Aji
       Aji.redis.zremrangebyscore @key, "-inf", min_relevance
     end
 
-    def print
+    def print top=10
       Aji.log.debug "Trending on #{@video_source}, #{video_uids.count} videos:"
-      top = 10
       top_videos = video_uids(top).each do |vid|
         video = Video.new vid, @video_source
         Aji.log.debug "  #{relevance(video).to_s.rjust(5)} | #{video.to_s}"
