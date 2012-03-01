@@ -19,14 +19,14 @@ describe Trending do
 
   describe "#promote_video" do
     it "increments given external id by given relevance" do
-      expect { subject.promote_video mention }.
-        to change { subject.relevance(mention.video) }.
+      expect { subject.promote_video video, mention.relevance }.
+        to change { subject.relevance(video) }.
         by (mention.relevance)
     end
 
     it "adds video into zset" do
-      expect { subject.promote_video mention }.
-        to change { subject.video_uids.include? mention.video.uid }.
+      expect { subject.promote_video video, mention.relevance }.
+        to change { subject.video_uids.include? video.uid }.
         from(false).to(true)
     end
 
@@ -54,7 +54,7 @@ describe Trending do
   describe "#set_relevance" do
     let(:relevance) { 999 }
     it "updates relevance with given input" do
-      subject.promote_video mention
+      subject.promote_video video, mention.relevance
       subject.relevance(video).should_not == relevance
 
       subject.set_relevance video, relevance
@@ -65,11 +65,11 @@ describe Trending do
   describe "#decay_videos" do
     let(:percent) { 15 }
     it "decays videos by given discount" do
-      subject.promote_video mention
+      subject.promote_video video, mention.relevance
 
-      original = subject.relevance mention.video
+      original = subject.relevance video
       subject.decay_videos percent
-      decayed = subject.relevance mention.video
+      decayed = subject.relevance video
 
       (100*(original-decayed)/original).should == percent
     end
@@ -78,10 +78,10 @@ describe Trending do
   describe "#truncate_videos" do
     it "removes old videos which relevance is lower than given min" do
       mention.stub :relevance => 10
-      subject.promote_video mention
+      subject.promote_video video, mention.relevance
 
       subject.truncate_videos mention.relevance * 2
-      subject.video_uids.should_not include mention.video.uid
+      subject.video_uids.should_not include video.uid
     end
   end
 end

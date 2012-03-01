@@ -27,7 +27,7 @@ describe PromoteVideo do
     end
 
     it "updates trending channel with given mention" do
-      trending.should_receive(:promote_video).with(mention)
+      trending.should_receive(:promote_video).with(mention.video, mention.relevance)
 
       subject.perform tweet
     end

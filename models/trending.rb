@@ -6,8 +6,8 @@ module Aji
       @key = "trending::#{@video_source}"
     end
 
-    def promote_video mention
-      Aji.redis.zincrby @key, mention.relevance, mention.video.uid
+    def promote_video video, by_relevance
+      Aji.redis.zincrby @key, by_relevance, video.uid
     end
 
     def video_uids limit=0

@@ -9,7 +9,7 @@ module Aji
           return if mention.spam?
 
           trending = Aji::Trending.new mention.video.source
-          trending.promote_video mention
+          trending.promote_video mention.video, mention.relevance
         end
       end
     end
