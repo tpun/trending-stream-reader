@@ -24,7 +24,6 @@ module Aji
     end
 
     def destroy
-      Aji.log.debug "Destroying #{self}..."
       expire_keys 0
     end
 

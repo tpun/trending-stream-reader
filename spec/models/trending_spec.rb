@@ -84,6 +84,23 @@ describe Trending do
     end
   end
 
+  describe "#remove_video" do
+    before(:each) do
+      subject.promote_video video, mention.relevance
+    end
+
+    it "removes given video from trending videos" do
+      expect { subject.remove_video video }.
+        to change { subject.video_uids.include? video.uid }.
+        from(true).to(false)
+    end
+
+    it "destroys given video" do
+      video.should_receive :destroy
+      subject.remove_video video
+    end
+  end
+
   describe "#truncate_videos" do
     let(:min_relevance) { 100 }
     before :each do

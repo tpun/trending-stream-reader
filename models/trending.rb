@@ -51,14 +51,18 @@ module Aji
       end
     end
 
+    def remove_video video
+      video.destroy
+      Aji.redis.zrem @key, video.uid
+    end
+
     def truncate_videos min_relevance
       old_uids = Aji.redis.zrangebyscore @key, "-inf", min_relevance
-      Aji.log.debug "Destroying #{old_uids.count} videos..."
       old_uids.each do |vid|
         video = Video.new vid
-        video.destroy
-        Aji.redis.zrem @key, vid
+        remove_video video
       end
+      Aji.log.info "Destroyed #{old_uids.count} videos."
     end
 
     def print top=10
