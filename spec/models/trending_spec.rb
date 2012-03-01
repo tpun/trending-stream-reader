@@ -18,10 +18,10 @@ describe Trending do
   end
 
   describe "#promote_video" do
-    it "increments given external id by given significance" do
+    it "increments given external id by given relevance" do
       expect { subject.promote_video mention }.
         to change { subject.relevance(mention.video) }.
-        by (mention.significance)
+        by (mention.relevance)
     end
 
     it "adds video into zset" do
@@ -77,10 +77,10 @@ describe Trending do
 
   describe "#truncate_videos" do
     it "removes old videos which relevance is lower than given min" do
-      mention.stub :significance => 10
+      mention.stub :relevance => 10
       subject.promote_video mention
 
-      subject.truncate_videos mention.significance * 2
+      subject.truncate_videos mention.relevance * 2
       subject.video_uids.should_not include mention.video.uid
     end
   end

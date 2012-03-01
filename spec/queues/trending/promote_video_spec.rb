@@ -9,7 +9,7 @@ describe PromoteVideo do
       Mention.stub(:new).with(tweet).and_return(m)
       m.stub :spam? => false
       m.stub :video => mock(:uid => 'abc', :source => 'youtube')
-      m.stub :significance => 1000
+      m.stub :relevance => 1000
     end
   }
   let(:trending) {

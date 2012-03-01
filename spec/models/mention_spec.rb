@@ -55,9 +55,9 @@ describe Mention do
     end
   end
 
-  describe "#significance" do
+  describe "#relevance" do
     it "is a positive number" do
-      subject.significance.should > 0
+      subject.relevance.should > 0
     end
   end
 

@@ -7,7 +7,7 @@ module Aji
     end
 
     def promote_video mention
-      Aji.redis.zincrby @key, mention.significance, mention.video.uid
+      Aji.redis.zincrby @key, mention.relevance, mention.video.uid
     end
 
     def video_uids limit=0

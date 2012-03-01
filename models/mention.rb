@@ -30,7 +30,7 @@ module Aji
       @video.spammed_by? @author
     end
 
-    def significance
+    def relevance
       10000
     end
   end
