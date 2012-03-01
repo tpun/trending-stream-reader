@@ -33,7 +33,7 @@ module Aji
     # What to do when an error occurs. For now we just log it.
     def set_error
       @client.on_error do |message|
-        Aji.log.error.puts "ERROR: #{message}"
+        Aji.log.error "ERROR: #{message}"
       end
     end
 
