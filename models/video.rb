@@ -29,7 +29,8 @@ module Aji
         time = (Aji.redis.zscore @keys[:mention_uids], mid).to_i
         ages << (Time.now.to_i - time)
       end
-      "#{@source}[#{@uid}], #{mention_count} mentions (#{ages.join(', ')})"
+      mentioner_count = Aji.redis.zcard @keys[:mentioner_uids]
+      "#{@source}[#{@uid}], #{mention_count} mentions (#{ages.join(', ')}) by #{mentioner_count} authors"
     end
 
     # Because we remove everything that doesn't get another mention in 2 hours
