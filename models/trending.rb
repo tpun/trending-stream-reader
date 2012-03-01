@@ -23,29 +23,31 @@ module Aji
       # 10,000 is default for 1 mention and we refresh 4 times an hour.
       # 15% geometric decay will be close to having a half life of 1 hour.
       decay_percent = 15
+      decay_videos decay_percent
 
       # Usually if we don't get another mention within 2 hours,
       # it's probably not something we care.
       min_relevance = Mention::Relevance / 4
-
-      decay_videos decay_percent
       truncate_videos min_relevance
     end
 
     def relevance video
-      Aji.redis.zscore(@key, video.uid).to_i
+      relevance_by_uid video.uid
     end
 
-    def set_relevance video, new_relevance
-      Aji.redis.zadd @key, new_relevance, video.uid
+    def relevance_by_uid video_uid
+      Aji.redis.zscore(@key, video_uid).to_i
+    end
+
+    def set_relevance_by_uid video_uid, new_relevance
+      Aji.redis.zadd @key, new_relevance, video_uid
     end
 
     def decay_videos by_percent
-      video_uids.each do |vid| # so we create video object one by one
-        video = Video.new vid, @video_source
-        original = relevance video
+      video_uids.each do |video_uid| # so we create video object one by one
+        original = relevance_by_uid video_uid
         decayed = original * (100 - by_percent) / 100
-        set_relevance video, decayed
+        set_relevance_by_uid video_uid, decayed
       end
     end
 

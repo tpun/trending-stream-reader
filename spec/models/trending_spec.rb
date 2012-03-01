@@ -43,21 +43,30 @@ describe Trending do
   end
 
   describe "#relevance" do
-    let(:relevance) { 999 }
-    it "returns relvance previously set" do
-      subject.set_relevance video, relevance
+    it "calls relevance_by_uid" do
+      subject.should_receive(:relevance_by_uid).with(video.uid)
 
-      subject.relevance(video).should == relevance
+      subject.relevance video
     end
   end
 
-  describe "#set_relevance" do
+  describe "#relevance_by_uid" do
+    let(:relevance) { 999 }
+    let(:uid) { video.uid }
+    it "returns relvance previously set" do
+      subject.set_relevance_by_uid uid, relevance
+
+      subject.relevance_by_uid(uid).should == relevance
+    end
+  end
+
+  describe "#set_relevance_by_uid" do
     let(:relevance) { 999 }
     it "updates relevance with given input" do
       subject.promote_video video, mention.relevance
       subject.relevance(video).should_not == relevance
 
-      subject.set_relevance video, relevance
+      subject.set_relevance_by_uid video.uid, relevance
       subject.relevance(video).should == relevance
     end
   end
