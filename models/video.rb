@@ -32,7 +32,9 @@ module Aji
       "#{@source}[#{@uid}], #{mention_count} mentions (#{ages.join(', ')})"
     end
 
-    def expire_keys ttl=6.hours
+    # Because we remove everything that doesn't get another mention in 2 hours
+    # we only need the video keys to live for that long
+    def expire_keys ttl=125.minutes
       @keys.each_pair do |name, key|
         Aji.redis.expire key, ttl
       end

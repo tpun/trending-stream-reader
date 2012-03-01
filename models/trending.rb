@@ -23,7 +23,10 @@ module Aji
       # 10,000 is default for 1 mention and we refresh 4 times an hour.
       # 15% geometric decay will be close to having a half life of 1 hour.
       decay_percent = 15
-      min_relevance = 1
+
+      # Usually if we don't get another mention within 2 hours,
+      # it's probably not something we care.
+      min_relevance = Mention::Relevance / 4
 
       decay_videos decay_percent
       truncate_videos min_relevance

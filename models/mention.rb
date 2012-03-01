@@ -4,6 +4,7 @@ module Aji
   class Mention
     attr_reader :raw, :source, :uid, :created_at
     attr_reader :author, :video
+    Relevance = 10000
 
     def initialize raw, source='twitter'
       @raw = raw
@@ -31,7 +32,7 @@ module Aji
     end
 
     def relevance
-      10000
+      self.class::Relevance
     end
   end
 end
