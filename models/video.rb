@@ -23,6 +23,11 @@ module Aji
       Aji.redis.zcard @keys[:mention_uids]
     end
 
+    def destroy
+      Aji.log.debug "Destroying #{self}..."
+      expire_keys 0
+    end
+
     def to_s
       ages = []
       Aji.redis.zrevrange(@keys[:mention_uids], 0, 5).each do |mid|

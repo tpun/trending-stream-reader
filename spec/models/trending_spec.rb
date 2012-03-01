@@ -76,12 +76,21 @@ describe Trending do
   end
 
   describe "#truncate_videos" do
-    it "removes old videos which relevance is lower than given min" do
-      mention.stub :relevance => 10
-      subject.promote_video video, mention.relevance
+    let(:min_relevance) { 100 }
+    before :each do
+      subject.promote_video video, min_relevance/2
+    end
 
-      subject.truncate_videos mention.relevance * 2
+    it "removes old videos which relevance is lower than given min" do
+      subject.truncate_videos min_relevance
       subject.video_uids.should_not include video.uid
+    end
+
+    it "destroy the old videos" do
+      video.mention_count.should > 0
+
+      subject.truncate_videos min_relevance
+      video.mention_count.should == 0
     end
   end
 end

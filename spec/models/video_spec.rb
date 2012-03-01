@@ -56,6 +56,14 @@ describe Video do
     end
   end
 
+  describe "#destroy" do
+    it "expires keys right the way" do
+      subject.should_receive(:expire_keys).with(0)
+
+      subject.destroy
+    end
+  end
+
   describe "#expire_keys" do
     before :each do # since you can't set expire on empty keys
       subject.mentioned_in mention
