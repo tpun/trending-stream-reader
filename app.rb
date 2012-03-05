@@ -8,6 +8,7 @@ require 'logger'
 require 'yaml'
 
 require_relative 'lib/stream_reader'
+Dir.glob("lib/patches/*.rb").each { |r| require_relative r }
 Dir.glob("models/*.rb").each { |r| require_relative r }
 Dir.glob("queues/*.rb").each { |r| require_relative r }
 Dir.glob("queues/mention/*.rb").each { |r| require_relative r }

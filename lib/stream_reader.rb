@@ -20,6 +20,8 @@ module Aji
       set_limit
       set_error
       set_delete
+
+      @start_time = Time.now
     end
 
     # What to do when receiving a limit message. No action is needed since they
@@ -54,7 +56,7 @@ module Aji
       @client.track(@keywords) do |tweet|
         Resque.enqueue @queue_class, tweet
         count +=1
-        Aji.log.info "Enqueued #{count} tweets" if count % 1000 == 0
+        Aji.log.info "Enqueued #{count} tweets since #{@start_time.age}" if count % 1000 == 0
       end
     end
   end
