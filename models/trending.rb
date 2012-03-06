@@ -20,9 +20,9 @@ module Aji
 
     def refresh
       # We want 1 mention to have effect over 4 hours.
-      # 10,000 is default for 1 mention and we refresh 4 times an hour.
-      # 15% geometric decay will be close to having a half life of 1 hour.
-      decay_percent = 15
+      # 10,000 is default for 1 mention and we refresh 12 times per hour.
+      # 5% geometric decay every 5 minutes will be close to having a half life of 1 hour.
+      decay_percent = 5
       decay_videos decay_percent
 
       # Usually if we don't get another mention within 2 hours,
