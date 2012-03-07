@@ -27,8 +27,17 @@ module Aji
       @video.mentioned_in self
     end
 
+    def text
+      @raw["text"]
+    end
+
     def spam?
       @video.spammed_by? @author
+    end
+
+    # TODO: Need better language detector but ascii has been a good first order test
+    def english?
+      text.ascii_only?
     end
 
     def relevance

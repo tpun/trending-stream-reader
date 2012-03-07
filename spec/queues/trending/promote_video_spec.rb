@@ -8,6 +8,7 @@ describe PromoteVideo do
     mock.tap do |m|
       Mention.stub(:new).with(tweet).and_return(m)
       m.stub :spam? => false
+      m.stub :english? => true
       m.stub :video => mock(:uid => 'abc', :source => 'youtube')
       m.stub :relevance => 1000
     end
@@ -22,6 +23,13 @@ describe PromoteVideo do
     it "drops spammy mentions" do
       mention.should_receive(:spam?).and_return(true)
       trending.should_not_receive(:promote_video)
+
+      subject.perform tweet
+    end
+
+    it "drops non english mentions" do
+      mention.stub :english? => false
+      trending.should_not_receive :promote_video
 
       subject.perform tweet
     end

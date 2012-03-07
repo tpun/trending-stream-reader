@@ -37,6 +37,12 @@ describe Mention do
     end
   end
 
+  describe "#text" do
+    it "returns the text of the tweet" do
+      subject.text.should == "http://t.co/isjjO1Z2 #ilvolodelmattino"
+    end
+  end
+
   describe "#spam?" do
     it "returns true if author is spamming this video" do
       subject.video.should_receive(:spammed_by?).
@@ -52,6 +58,18 @@ describe Mention do
         and_return(false)
 
       subject.should_not be_spam
+    end
+  end
+
+  describe "#english?" do
+    it "returns true if the text is in ascii only" do
+      subject.should be_english
+    end
+
+    it "returns false otherwise" do
+      subject.stub :text => " المالكي انشر للجميع"
+
+      subject.should_not be_english
     end
   end
 
