@@ -29,7 +29,7 @@ module Aji
 
     def to_s
       ages = []
-      Aji.redis.zrevrange(@keys[:mention_uids], 0, 5).each do |mid|
+      Aji.redis.zrevrange(@keys[:mention_uids], 0, 4).each do |mid|
         time = (Aji.redis.zscore @keys[:mention_uids], mid).to_i
         ages << (Time.now.to_i - time)
       end
