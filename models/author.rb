@@ -13,5 +13,9 @@ module Aji
     def relevance_ratio # 0.0 .. 3.0
       @relevance_ratio ||= [@followers / ( 1.0 + @friends), 3.0].min
     end
+
+    def spammer?
+      relevance_ratio < 0.2
+    end
   end
 end

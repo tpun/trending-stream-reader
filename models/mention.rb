@@ -35,7 +35,7 @@ module Aji
     end
 
     def spam?
-      @video.spammed_by? @author
+      @video.spammed_by? @author or @author.spammer?
     end
 
     # TODO: Need better language detector but ascii has been a good first order test

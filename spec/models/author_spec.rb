@@ -24,4 +24,18 @@ describe Author do
       spammer.relevance_ratio.should be_within(0.1).of(0.0)
     end
   end
+
+  describe "#spammer?" do
+    subject = Author.new 'blah', 'twitter', { friends: 10, followers: 10}
+
+    it "is spammer if relevance_ratio is low" do
+      subject.stub :relevance_ratio => 0.1
+
+      subject.should be_spammer
+    end
+
+    it "returns false otherwise" do
+      subject.should_not be_spammer
+    end
+  end
 end
