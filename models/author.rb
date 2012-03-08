@@ -14,8 +14,12 @@ module Aji
       @relevance_ratio ||= [@followers / ( 1.0 + @friends), 3.0].min
     end
 
+    # We mark author with very few friends and followers as spammer.
+    # Their vote doesn't count much and spammer ring seems to all have very
+    # low friends/followers count.
     def spammer?
-      relevance_ratio < 0.2
+      relevance_ratio < 0.2 or
+      (@followers + @friends) < 30
     end
   end
 end
