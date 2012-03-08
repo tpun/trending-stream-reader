@@ -58,6 +58,7 @@ module Aji
 
     def truncate_videos min_relevance
       old_uids = Aji.redis.zrangebyscore @key, "-inf", min_relevance
+      Aji.log.info "Found #{old_uids.count} old videos (< #{min_relevance})"
       old_uids.each do |vid|
         video = Video.new vid
         remove_video video
