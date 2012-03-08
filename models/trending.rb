@@ -25,9 +25,9 @@ module Aji
       decay_percent = 5
       decay_videos decay_percent
 
-      # Usually if we don't get another mention within 2 hours,
+      # Usually if we don't get another mention within 1 hour,
       # it's probably not something we care.
-      min_relevance = Mention::Relevance / 4
+      min_relevance = Mention::Relevance / 2
       truncate_videos min_relevance
     end
 
