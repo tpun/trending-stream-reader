@@ -34,8 +34,6 @@ describe PromoteVideo do
       subject.perform tweet
     end
 
-    it "drops videos with non english text"
-
     it "updates trending channel with given mention" do
       trending.should_receive(:promote_video).with(mention.video, mention.relevance)
 
