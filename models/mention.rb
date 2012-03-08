@@ -11,7 +11,10 @@ module Aji
       @source = source
       @uid = @raw["id_str"]
       @created_at = Time.parse @raw["created_at"]
-      @author = Author.new @raw["user"]["id_str"], @source
+      @author = Author.new( @raw["user"]["id_str"],
+                            @source,
+                            { friends: @raw["user"]["friends_count"],
+                              followers:  @raw["user"]["followers_count"]} )
 
       # check retweet status first
       if @raw["retweeted_status"]
@@ -41,7 +44,7 @@ module Aji
     end
 
     def relevance
-      self.class::Relevance
+      self.class::Relevance * @author.relevance_ratio
     end
   end
 end

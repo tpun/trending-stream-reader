@@ -34,7 +34,8 @@ module Aji
         ages << (Time.now.to_i - time)
       end
       mentioner_count = Aji.redis.zcard @keys[:mentioner_uids]
-      "#{@source}[#{@uid}], #{mention_count} mentions by #{mentioner_count} authors (#{ages.join(', ')})"
+      "#{@source}[#{@uid}], #{mention_count} mentions (TTL: #{Aji.redis.ttl @keys[:mention_uids]}) "+
+      "by #{mentioner_count} authors (TTL: #{Aji.redis.ttl @keys[:mentioner_uids]}) (#{ages.join(', ')})"
     end
 
     def expire_keys ttl=12.hours
