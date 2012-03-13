@@ -21,5 +21,9 @@ module Aji
       relevance_ratio < 0.2 or
       (@followers + @friends) < 30
     end
+
+    def to_s
+      "Author: #{@uid} @ #{@source}, followers: #{@followers}, friends: #{@friends}, spammer? #{spammer?}"
+    end
   end
 end

@@ -8,6 +8,8 @@ module Aji
           mention = Aji::Mention.new tweet
           if mention.spam? or !mention.english?
             mention.mark_spam
+
+            Aji.log.warn "Spam: #{mention}"
             return
           end
 

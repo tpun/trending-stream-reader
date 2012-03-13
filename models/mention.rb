@@ -50,5 +50,9 @@ module Aji
     def relevance
       self.class::Relevance * @author.relevance_ratio
     end
+
+    def to_s
+      "Mention.uid: #{@uid} by #{@author}, relevance: #{relevance}"
+    end
   end
 end
