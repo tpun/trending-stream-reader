@@ -30,6 +30,10 @@ module Aji
       @video.mentioned_in self
     end
 
+    def mark_spam
+      @video.mark_spam
+    end
+
     def text
       @raw["text"]
     end

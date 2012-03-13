@@ -43,6 +43,14 @@ describe Mention do
     end
   end
 
+  describe "#mark_spam" do
+    it "marks @video spam as well" do
+      subject.video.should_receive :mark_spam
+
+      subject.mark_spam
+    end
+  end
+
   describe "#spam?" do
     it "returns true if author is spamming this video" do
       subject.video.should_receive(:spammed_by?).

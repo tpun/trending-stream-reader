@@ -11,6 +11,7 @@ describe PromoteVideo do
       m.stub :english? => true
       m.stub :video => mock(:uid => 'abc', :source => 'youtube')
       m.stub :relevance => 1000
+      m.stub :mark_spam => true
     end
   }
   let(:trending) {
@@ -20,8 +21,9 @@ describe PromoteVideo do
   }
 
   describe ".perform" do
-    it "drops spammy mentions" do
+    it "ignores and marks spammy mentions" do
       mention.should_receive(:spam?).and_return(true)
+      mention.should_receive(:mark_spam)
       trending.should_not_receive(:promote_video)
 
       subject.perform tweet
@@ -35,7 +37,8 @@ describe PromoteVideo do
     end
 
     it "updates trending channel with given mention" do
-      trending.should_receive(:promote_video).with(mention.video, mention.relevance)
+      trending.should_receive(:promote_video).
+        with(mention.video, mention.relevance)
 
       subject.perform tweet
     end

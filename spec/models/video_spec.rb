@@ -64,6 +64,14 @@ describe Video do
     end
   end
 
+  describe "#mark_spam" do
+    it "expires keys much sooner " do
+      subject.should_receive(:expire_keys).with(1.hours)
+
+      subject.mark_spam
+    end
+  end
+
   describe "#expire_keys" do
     before :each do # since you can't set expire on empty keys
       subject.mentioned_in mention

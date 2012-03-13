@@ -6,7 +6,10 @@ module Aji
 
         def self.perform tweet
           mention = Aji::Mention.new tweet
-          return if mention.spam? or !mention.english?
+          if mention.spam? or !mention.english?
+            mention.mark_spam
+            return
+          end
 
           trending = Aji::Trending.new mention.video.source
           trending.promote_video mention.video, mention.relevance

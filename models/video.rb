@@ -27,6 +27,12 @@ module Aji
       expire_keys 0
     end
 
+    def mark_spam
+      # significantly reduce the TTL of the keys.
+      # This TTL will get reset if this video gets a non spam mention
+      expire_keys 1.hours
+    end
+
     def to_s
       ages = []
       Aji.redis.zrevrange(@keys[:mention_uids], 0, 4).each do |mid|
@@ -38,7 +44,7 @@ module Aji
       "by #{mentioner_count} authors (TTL: #{Aji.redis.ttl @keys[:mentioner_uids]}) (#{ages.join(', ')})"
     end
 
-    def expire_keys ttl=12.hours
+    def expire_keys ttl=6.hours
       @keys.each_pair do |name, key|
         Aji.redis.expire key, ttl
       end
