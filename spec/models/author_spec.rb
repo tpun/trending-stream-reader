@@ -40,6 +40,12 @@ describe Author do
       spammer.should be_spammer
     end
 
+    it "is spammer if he only follows a very small number of people." do
+      spammer = Author.new 'blah', 'twitter', { friends: 5, followers: 10000 }
+
+      spammer.should be_spammer
+    end
+
     it "returns false otherwise" do
       subject.should_not be_spammer
     end

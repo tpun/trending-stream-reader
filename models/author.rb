@@ -19,7 +19,8 @@ module Aji
     # low friends/followers count.
     def spammer?
       relevance_ratio < 0.2 or
-      (@followers + @friends) < 30
+      (@followers + @friends) < 50 or
+      @friends < 10
     end
 
     def to_s
