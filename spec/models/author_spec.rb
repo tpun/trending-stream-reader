@@ -25,29 +25,39 @@ describe Author do
     end
   end
 
-  describe "#spammer?" do
+  describe "#irrelevant?" do
     subject = Author.new 'blah', 'twitter', { friends: 30, followers: 30}
 
-    it "is spammer if relevance_ratio is low" do
+    it "true if relevance_ratio is low" do
       subject.stub :relevance_ratio => 0.1
 
-      subject.should be_spammer
+      subject.should be_irrelevant
     end
 
-    it "is spammer if the sum of friends and followers is less than threshold" do
+    it "true if the sum of friends and followers is less than threshold" do
       spammer = Author.new 'blah', 'twitter', { friends: 10, followers: 0}
 
-      spammer.should be_spammer
+      spammer.should be_irrelevant
     end
 
-    it "is spammer if he only follows a very small number of people." do
+    it "true if he only follows a very small number of people." do
       spammer = Author.new 'blah', 'twitter', { friends: 5, followers: 10000 }
 
-      spammer.should be_spammer
+      spammer.should be_irrelevant
     end
 
     it "returns false otherwise" do
-      subject.should_not be_spammer
+      subject.should_not be_irrelevant
+    end
+  end
+
+  describe "#spammer?" do
+    subject = Author.new 'blah', 'twitter', { friends: 30, followers: 30}
+
+    it "is true if author is irrelevant" do
+      subject.stub :irrelevant? => true
+
+      subject.should be_irrelevant
     end
   end
 end
