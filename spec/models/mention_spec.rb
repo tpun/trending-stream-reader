@@ -45,7 +45,7 @@ describe Mention do
 
   describe "#mark_spam" do
     it "marks @video spam as well" do
-      subject.video.should_receive :mark_spam
+      subject.video.should_receive(:mark_spam).with(subject)
 
       subject.mark_spam
     end

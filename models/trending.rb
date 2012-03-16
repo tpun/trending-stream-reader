@@ -67,9 +67,9 @@ module Aji
 
     def print top=10
       Aji.log.debug "Trending on #{@video_source}, #{video_uids.count} videos:"
-      top_videos = video_uids(top).each do |vid|
+      top_videos = video_uids(top).each_with_index do |vid, index|
         video = Video.new vid, @video_source
-        Aji.log.debug "  #{relevance(video).to_s.rjust(5)} | #{video.to_s}"
+        Aji.log.debug "#{index.to_s.rjust(3)}.   #{relevance(video).to_s.rjust(5)} | #{video.to_s}"
       end
     end
   end

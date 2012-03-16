@@ -31,7 +31,7 @@ module Aji
     end
 
     def mark_spam
-      @video.mark_spam
+      @video.mark_spam self
     end
 
     def text

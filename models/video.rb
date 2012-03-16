@@ -4,8 +4,11 @@ module Aji
     def initialize uid, source='youtube'
       @uid = uid
       @source = source
-      @keys = { mention_uids:   "video:#{@source}[#{@uid}]:mention_uids",
-                mentioner_uids: "video:#{@source}[#{@uid}]:mentioner_uids" }
+      prefix = "video:#{@source}[#{@uid}]"
+      @keys = { mention_uids:   "#{prefix}:mention_uids",
+                mentioner_uids: "#{prefix}:mentioner_uids",
+                spam_uids:      "#{prefix}:spam_uids",
+                spammer_uids:   "#{prefix}:spammer_uids" }
     end
 
     def spammed_by? mentioner
@@ -27,7 +30,14 @@ module Aji
       expire_keys 0
     end
 
-    def mark_spam
+    def track_spammer spam
+      Aji.redis.zincrby @keys[:spammer_uids], 1, spam.author.uid
+      Aji.redis.zadd @keys[:spam_uids], spam.created_at.to_i, spam.uid
+    end
+
+    def mark_spam from_spam
+      track_spammer from_spam
+
       # significantly reduce the TTL of the keys.
       # This TTL will get reset if this video gets a non spam mention
       expire_keys 1.hours
@@ -40,8 +50,18 @@ module Aji
         ages << (Time.now.to_i - time)
       end
       mentioner_count = Aji.redis.zcard @keys[:mentioner_uids]
+
+      spam_count = Aji.redis.zcard @keys[:spam_uids]
+      spammer_count = Aji.redis.zcard @keys[:spammer_uids]
+      spam_ages = []
+      Aji.redis.zrevrange(@keys[:spam_uids], 0, 4).each do |mid|
+        time = (Aji.redis.zscore @keys[:spam_uids], mid).to_i
+        spam_ages << (Time.now.to_i - time)
+      end
+
       "#{@source}[#{@uid}], #{mention_count} mentions (TTL: #{Aji.redis.ttl @keys[:mention_uids]}) "+
-      "by #{mentioner_count} authors (TTL: #{Aji.redis.ttl @keys[:mentioner_uids]}) (#{ages.join(', ')})"
+      "by #{mentioner_count} authors (TTL: #{Aji.redis.ttl @keys[:mentioner_uids]}) (#{ages.join(', ')})"+
+      ", #{spam_count} spams by #{spammer_count} (#{spam_ages.join(', ')})"
     end
 
     def expire_keys ttl=6.hours
