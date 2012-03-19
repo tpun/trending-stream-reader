@@ -67,14 +67,22 @@ describe Video do
   describe "#mark_spam" do
     let(:spam) { mention }
 
-    it "expires keys much sooner " do
-      subject.should_receive(:expire_keys).with(1.hours)
+    it "tracks given spammer" do
+      subject.should_receive(:track_spammer).with(spam)
 
       subject.mark_spam spam
     end
 
-    it "tracks given spammer" do
-      subject.should_receive(:track_spammer).with(spam)
+    it "destroys self unless we have got a mention from a non spammer" do
+      subject.stub :enough_legit_mentions? => false
+      subject.should_receive :destroy
+
+      subject.mark_spam spam
+    end
+
+    it "expires keys much sooner if we did have enough legit mentions before" do
+      subject.stub :enough_legit_mentions? => true
+      subject.should_receive(:expire_keys).with(1.hours)
 
       subject.mark_spam spam
     end

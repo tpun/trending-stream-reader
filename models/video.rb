@@ -35,12 +35,23 @@ module Aji
       Aji.redis.zadd @keys[:spam_uids], spam.created_at.to_i, spam.uid
     end
 
+    def enough_legit_mentions?
+      spammers = Aji.redis.zcard @keys[:spammer_uids]
+      mentioners = Aji.redis.zcard @keys[:mentioner_uids]
+      spammers * 2 > mentioners
+    end
+
     def mark_spam from_spam
       track_spammer from_spam
 
-      # significantly reduce the TTL of the keys.
-      # This TTL will get reset if this video gets a non spam mention
-      expire_keys 1.hours
+      if enough_legit_mentions?
+        # significantly reduce the TTL of the keys.
+        # This TTL will get reset if this video gets a non spam mention
+        expire_keys 1.hours
+      else
+        # Just destroy self if there aren't enough legit mentioners
+        destroy
+      end
     end
 
     def to_s
