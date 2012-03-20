@@ -64,6 +64,15 @@ describe Video do
     end
   end
 
+  describe "#spammed_by_others?" do
+    it "is true if the ratio between mentions and mentioners is high" do
+      subject.stub :mention_count => 131
+      subject.stub :mentioner_count => 100
+
+      subject.should be_spammed_by_others
+    end
+  end
+
   describe "#spam?" do
     it "true if video has been previously added to global spam list" do
       subject.mark_spam

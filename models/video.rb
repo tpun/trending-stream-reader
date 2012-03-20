@@ -31,6 +31,10 @@ module Aji
       Aji.redis.zcard @keys[:mention_uids]
     end
 
+    def mentioner_count
+      Aji.redis.zcard @keys[:mentioner_uids]
+    end
+
     def destroy
       expire_keys 0
     end
@@ -41,9 +45,7 @@ module Aji
     end
 
     def spammed_by_others?
-      spammers = Aji.redis.zcard @keys[:spammer_uids]
-      mentioners = Aji.redis.zcard @keys[:mentioner_uids]
-      spammers > mentioners / 2
+      mentioner_count > 0 and mention_count * 100 / mentioner_count > 130
     end
 
     def spam?
