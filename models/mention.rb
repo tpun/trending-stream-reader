@@ -31,7 +31,7 @@ module Aji
     end
 
     def mark_spam
-      @video.mark_spam self
+      @video.check_spam self
     end
 
     def text
@@ -39,7 +39,7 @@ module Aji
     end
 
     def spam?
-      @video.spammed_by? @author or @author.spammer?
+      @author.spammer? or @video.spam? or @video.spammed_by? @author
     end
 
     # TODO: Need better language detector but ascii has been a good first order test

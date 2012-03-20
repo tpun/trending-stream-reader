@@ -45,7 +45,7 @@ describe Mention do
 
   describe "#mark_spam" do
     it "marks @video spam as well" do
-      subject.video.should_receive(:mark_spam).with(subject)
+      subject.video.should_receive(:check_spam).with(subject)
 
       subject.mark_spam
     end
@@ -62,6 +62,12 @@ describe Mention do
 
     it "returns true if author is likely to be a spammer" do
       subject.author.stub :spammer? => true
+
+      subject.should be_spam
+    end
+
+    it "returns true if video is spam" do
+      subject.video.stub :spam? => true
 
       subject.should be_spam
     end

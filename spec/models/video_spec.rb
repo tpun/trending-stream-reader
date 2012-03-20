@@ -64,34 +64,58 @@ describe Video do
     end
   end
 
+  describe "#spam?" do
+    it "true if video has been previously added to global spam list" do
+      subject.mark_spam
+
+      subject.should be_spam
+    end
+
+    it "is false by default" do
+      subject.should_not be_spam
+    end
+  end
+
   describe "#mark_spam" do
+    it "adds self to global spam list" do
+      Aji.redis.should_receive(:zadd).
+        with(Video::Spam_Key, an_instance_of(Fixnum), subject.uid)
+
+      subject.mark_spam
+    end
+  end
+
+  describe "#check_spam" do
     let(:spam) { mention }
-
+    let(:spammer) { mention.author }
     it "tracks given spammer" do
-      subject.should_receive(:track_spammer).with(spam)
+      subject.stub(:spammed_by?).with(spammer).and_return(true)
+      subject.stub(:heavily_spammed_by?).with(spammer).and_return(false)
+      subject.should_receive(:track_spam).with(spam)
 
-      subject.mark_spam spam
+      subject.check_spam spam
     end
 
-    it "destroys self unless we have got a mention from a non spammer" do
-      subject.stub :enough_legit_mentions? => false
-      subject.should_receive :destroy
+    it "marks current video spam if others have spammed it" do
+      subject.stub :spammed_by_others? => true
+      subject.should_receive :mark_spam
 
-      subject.mark_spam spam
+      subject.check_spam spam
     end
 
-    it "expires keys much sooner if we did have enough legit mentions before" do
-      subject.stub :enough_legit_mentions? => true
-      subject.should_receive(:expire_keys).with(1.hours)
+    it "marks current video spam if given spammer has been spamming it heavily" do
+      subject.stub :spammed_by_others? => false
+      subject.stub(:heavily_spammed_by?).with(spammer).and_return(true)
+      subject.should_receive :mark_spam
 
-      subject.mark_spam spam
+      subject.check_spam spam
     end
   end
 
   describe "#expire_keys" do
     before :each do # since you can't set expire on empty keys
       subject.mentioned_in mention
-      subject.mark_spam mention
+      subject.track_spam mention
     end
 
     it "expires all keys" do

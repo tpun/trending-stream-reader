@@ -11,8 +11,14 @@ module Aji
                 spammer_uids:   "#{prefix}:spammer_uids" }
     end
 
-    def spammed_by? mentioner
-      mention_count(mentioner) > 2
+    Spam_Key = "Video:Spam"
+
+    def spammed_by? mentioner, count=2
+      mention_count(mentioner) > count
+    end
+
+    def heavily_spammed_by? mentioner
+      spammed_by? mentioner, 5
     end
 
     def mentioned_in mention
@@ -30,28 +36,29 @@ module Aji
       expire_keys 0
     end
 
-    def track_spammer spam
+    def track_spam spam
       Aji.redis.zincrby @keys[:spammer_uids], 1, spam.author.uid
       Aji.redis.zadd @keys[:spam_uids], spam.created_at.to_i, spam.uid
+      expire_keys
     end
 
-    def enough_legit_mentions?
+    def spammed_by_others?
       spammers = Aji.redis.zcard @keys[:spammer_uids]
       mentioners = Aji.redis.zcard @keys[:mentioner_uids]
-      spammers * 2 > mentioners
+      spammers > mentioners / 2
     end
 
-    def mark_spam from_spam
-      track_spammer from_spam
+    def spam?
+      not (Aji.redis.zscore Spam_Key, uid).nil?
+    end
 
-      if enough_legit_mentions?
-        # significantly reduce the TTL of the keys.
-        # This TTL will get reset if this video gets a non spam mention
-        expire_keys 1.hours
-      else
-        # Just destroy self if there aren't enough legit mentioners
-        destroy
-      end
+    def mark_spam
+      Aji.redis.zadd Spam_Key, Time.now.to_i, uid
+    end
+
+    def check_spam spam
+      track_spam spam if spammed_by? spam.author
+      mark_spam if spammed_by_others? or heavily_spammed_by? spam.author
     end
 
     def to_s
