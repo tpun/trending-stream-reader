@@ -83,6 +83,14 @@ describe Video do
 
       subject.mark_spam
     end
+
+    let(:trending) { stub }
+    it "removes self from trending channel" do
+      Trending.stub(:new).and_return trending
+      trending.should_receive(:remove_video).with(subject)
+
+      subject.mark_spam
+    end
   end
 
   describe "#check_spam" do
