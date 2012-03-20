@@ -13,6 +13,7 @@ module Aji
     YOUTUBE_REGEXPS = [
       %r<https?://(?:www\.)?youtube(?:-nocookie)?\.com/v/#{YOUTUBE_ID_REGEXP}["?]?>,
       %r<https?://(?:www\.)?youtube(?:-nocookie)?\.com/watch\?(?:\S&)?v=#{YOUTUBE_ID_REGEXP}[&"]?>,
+      %r<https?://(?:m\.)?youtube(?:-nocookie)?\.com/watch\?(?:\S&)?v=#{YOUTUBE_ID_REGEXP}[&"]?>,
       %r<https?://(?:youtu|y2u)\.be/#{YOUTUBE_ID_REGEXP}>
     ]
     VIMEO_REGEXP = %r<https?://(?:www\.)?vimeo\.com/(#{VIMEO_ID_REGEXP})>

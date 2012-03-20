@@ -20,6 +20,18 @@ describe Link do
       link.type.should == 'youtube'
       link.external_id.should == '-iAUwamHTM4'
     end
+
+    it "detects y2u.be links" do
+      link = Link.new("http://y2u.be/-iAUwamHTM4")
+      link.type.should == 'youtube'
+      link.external_id.should == '-iAUwamHTM4'
+    end
+
+    it "detects youtube mobile links" do
+      link = Link.new "http://m.youtube.com/watch?v=F379PKY7Hns"
+      link.type.should == 'youtube'
+      link.external_id.should == 'F379PKY7Hns'
+    end
   end
 
   it "detects vimeo links" do
