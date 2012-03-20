@@ -7,7 +7,6 @@ module Aji
       prefix = "video:#{@source}[#{@uid}]"
       @keys = { mention_uids:   "#{prefix}:mention_uids",
                 mentioner_uids: "#{prefix}:mentioner_uids",
-                spam_uids:      "#{prefix}:spam_uids",
                 spammer_uids:   "#{prefix}:spammer_uids" }
     end
 
@@ -23,7 +22,7 @@ module Aji
 
     def mentioned_in mention
       Aji.redis.zincrby @keys[:mentioner_uids], 1, mention.author.uid
-      Aji.redis.zadd @keys[:mention_uids], mention.created_at.to_i, mention.uid
+      Aji.redis.zadd @keys[:mention_uids], mention.created_at.to_i, "#{mention.uid} / #{mention.author.uid}"
       expire_keys
     end
 
@@ -37,8 +36,7 @@ module Aji
     end
 
     def track_spam spam
-      Aji.redis.zincrby @keys[:spammer_uids], 1, spam.author.uid
-      Aji.redis.zadd @keys[:spam_uids], spam.created_at.to_i, spam.uid
+      Aji.redis.zadd @keys[:spammer_uids], spam.created_at.to_i, spam.author.uid
       expire_keys
     end
 
@@ -54,6 +52,7 @@ module Aji
 
     def mark_spam
       Aji.redis.zadd Spam_Key, Time.now.to_i, uid
+      puts "SPAM: #{self.to_s}"
 
       # Remove self from trending videos
       trending = Trending.new @source
@@ -72,18 +71,11 @@ module Aji
         ages << (Time.now.to_i - time)
       end
       mentioner_count = Aji.redis.zcard @keys[:mentioner_uids]
-
-      spam_count = Aji.redis.zcard @keys[:spam_uids]
       spammer_count = Aji.redis.zcard @keys[:spammer_uids]
-      spam_ages = []
-      Aji.redis.zrevrange(@keys[:spam_uids], 0, 4).each do |mid|
-        time = (Aji.redis.zscore @keys[:spam_uids], mid).to_i
-        spam_ages << (Time.now.to_i - time)
-      end
 
       "#{@source}[#{@uid}], #{mention_count} mentions (TTL: #{Aji.redis.ttl @keys[:mention_uids]}) "+
       "by #{mentioner_count} authors (TTL: #{Aji.redis.ttl @keys[:mentioner_uids]}) (#{ages.join(', ')})"+
-      ", #{spam_count} spams by #{spammer_count} (#{spam_ages.join(', ')})"
+      ", #{spammer_count} spammers (TTL: #{Aji.redis.ttl @keys[:spammer_uids]})"
     end
 
     def expire_keys ttl=6.hours
