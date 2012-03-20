@@ -6,6 +6,7 @@ module Aji
 
         def self.perform tweet
           mention = Aji::Mention.new tweet
+          return unless mention.valid?
           if mention.spam? or !mention.english?
             mention.mark_spam
             return

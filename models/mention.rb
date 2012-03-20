@@ -30,6 +30,10 @@ module Aji
       @video.mentioned_in self
     end
 
+    def valid?
+      !@video.uid.empty? and !@author.uid.empty?
+    end
+
     def mark_spam
       @video.check_spam self
     end

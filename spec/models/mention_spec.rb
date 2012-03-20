@@ -43,6 +43,20 @@ describe Mention do
     end
   end
 
+  describe "#valid?" do
+    it "false if we don't have have video uid" do
+      subject.video.should_receive(:uid).and_return("")
+
+      subject.should_not be_valid
+    end
+
+    it "is false if we don't have author uid" do
+      subject.author.should_receive(:uid).and_return("")
+
+      subject.should_not be_valid
+    end
+  end
+
   describe "#mark_spam" do
     it "marks @video spam as well" do
       subject.video.should_receive(:check_spam).with(subject)
