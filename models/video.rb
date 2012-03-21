@@ -35,6 +35,10 @@ module Aji
       Aji.redis.zcard @keys[:mentioner_uids]
     end
 
+    def spammer_count
+      Aji.redis.zcard @keys[:spammer_uids]
+    end
+
     def destroy
       expire_keys 0
     end
@@ -45,7 +49,7 @@ module Aji
     end
 
     def spammed_by_others?
-      mentioner_count > 2 and mention_count * 100 / mentioner_count > 130
+      (spammer_count > 2) or (mention_count - mentioner_count > 10)
     end
 
     def spam?
@@ -72,8 +76,6 @@ module Aji
         time = (Aji.redis.zscore @keys[:mention_uids], mid).to_i
         ages << (Time.now.to_i - time)
       end
-      mentioner_count = Aji.redis.zcard @keys[:mentioner_uids]
-      spammer_count = Aji.redis.zcard @keys[:spammer_uids]
 
       "#{@source}[#{@uid}], #{mention_count} mentions (TTL: #{Aji.redis.ttl @keys[:mention_uids]}) "+
       "by #{mentioner_count} authors (TTL: #{Aji.redis.ttl @keys[:mentioner_uids]}) (#{ages.join(', ')})"+

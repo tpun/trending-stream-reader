@@ -65,18 +65,17 @@ describe Video do
   end
 
   describe "#spammed_by_others?" do
-    it "is true if the ratio between mentions and mentioners is high" do
-      subject.stub :mention_count => 131
+    it "is true if we have more than 10 spams" do
+      subject.stub :mention_count => 111
       subject.stub :mentioner_count => 100
 
       subject.should be_spammed_by_others
     end
 
-    it "is always false if we don't have more than 3 mentioners" do
-      subject.stub :mention_count => 100
-      subject.stub :mentioner_count => 2
+    it "is true if we have more than 2 spammers" do
+      subject.stub :spammer_count => 3
 
-      subject.should_not be_spammed_by_others
+      subject.should be_spammed_by_others
     end
   end
 
