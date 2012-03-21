@@ -71,6 +71,13 @@ describe Video do
 
       subject.should be_spammed_by_others
     end
+
+    it "is always false if we don't have more than 3 mentioners" do
+      subject.stub :mention_count => 100
+      subject.stub :mentioner_count => 2
+
+      subject.should_not be_spammed_by_others
+    end
   end
 
   describe "#spam?" do

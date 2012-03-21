@@ -45,7 +45,7 @@ module Aji
     end
 
     def spammed_by_others?
-      mentioner_count > 0 and mention_count * 100 / mentioner_count > 130
+      mentioner_count > 2 and mention_count * 100 / mentioner_count > 130
     end
 
     def spam?
