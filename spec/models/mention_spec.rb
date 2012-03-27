@@ -23,6 +23,14 @@ describe Mention do
     it "works with retweet" do
       lambda { retweet = Mention.new raw_retweet }.should_not raise_error
     end
+
+    context "when we get a tweet that doesn't include a valid youtube link" do
+      let(:invalid_raw) { {"coordinates"=>nil, "text"=>"@JordiLobato..http://www.youtube.com/watch?v=KnUvEYtmHDU&feature=youtube_gdata_player.. @s_gaher ..  #manoleando", "in_reply_to_status_id_str"=>nil, "retweet_count"=>0, "in_reply_to_user_id"=>403592114, "in_reply_to_user_id_str"=>"403592114", "favorited"=>false, "source"=>"<a href=\"http://twitter.com/download/android\" rel=\"nofollow\">Twitter for Android</a>", "created_at"=>"Tue Mar 27 07:48:58 +0000 2012", "id_str"=>"184547546813829120", "entities"=>{"urls"=>[], "hashtags"=>[{"text"=>"manoleando", "indices"=>[101, 112]}], "user_mentions"=>[{"indices"=>[0, 12], "id_str"=>"403592114", "screen_name"=>"JordiLobato", "name"=>"Jordi Garcia Lobato", "id"=>403592114}, {"indices"=>[88, 96], "id_str"=>"536274297", "screen_name"=>"s_gaher", "name"=>"sergio garcia", "id"=>536274297}]}, "contributors"=>nil, "place"=>nil, "in_reply_to_screen_name"=>"JordiLobato", "geo"=>nil, "in_reply_to_status_id"=>nil, "user"=>{"show_all_inline_media"=>false, "profile_text_color"=>"333333", "notifications"=>nil, "profile_background_image_url"=>"http://a0.twimg.com/images/themes/theme19/bg.gif", "listed_count"=>0, "profile_link_color"=>"0099CC", "description"=>"", "default_profile"=>false, "profile_background_image_url_https"=>"https://si0.twimg.com/images/themes/theme19/bg.gif", "created_at"=>"Mon May 24 10:11:06 +0000 2010", "profile_background_color"=>"FFF04D", "followers_count"=>19, "profile_image_url"=>"http://a0.twimg.com/profile_images/1843088243/mUavkMyV_normal", "id_str"=>"147516815", "is_translator"=>false, "lang"=>"es", "profile_background_tile"=>false, "url"=>nil, "profile_image_url_https"=>"https://si0.twimg.com/profile_images/1843088243/mUavkMyV_normal", "profile_sidebar_fill_color"=>"f6ffd1", "screen_name"=>"MestreEstellico", "verified"=>false, "protected"=>false, "default_profile_image"=>false, "contributors_enabled"=>false, "statuses_count"=>173, "following"=>nil, "geo_enabled"=>false, "profile_sidebar_border_color"=>"fff8ad", "location"=>"", "name"=>"Oscar", "follow_request_sent"=>nil, "favourites_count"=>56, "id"=>147516815, "profile_use_background_image"=>true, "time_zone"=>"Greenland", "utc_offset"=>-10800, "friends_count"=>131}, "id"=>184547546813829120, "retweeted"=>false, "truncated"=>false} }
+      specify "we throw :invalid_raw error" do
+        expect { Mention.new invalid_raw }.
+          to throw_symbol :invalid_raw
+      end
+    end
   end
 
   describe "#author" do
@@ -40,20 +48,6 @@ describe Mention do
   describe "#text" do
     it "returns the text of the tweet" do
       subject.text.should == "http://t.co/isjjO1Z2 #ilvolodelmattino"
-    end
-  end
-
-  describe "#valid?" do
-    it "false if we don't have have video uid" do
-      subject.video.should_receive(:uid).and_return(nil)
-
-      subject.should_not be_valid
-    end
-
-    it "is false if we don't have author uid" do
-      subject.author.should_receive(:uid).and_return(nil)
-
-      subject.should_not be_valid
     end
   end
 

@@ -28,10 +28,9 @@ module Aji
 
       @video = Video.new @video_uid, @video_source
       @video.mentioned_in self
-    end
 
-    def valid?
-      !@video.uid.nil? and !@author.uid.nil?
+    rescue
+      throw :invalid_raw # since we have errors creating the mention
     end
 
     def mark_spam

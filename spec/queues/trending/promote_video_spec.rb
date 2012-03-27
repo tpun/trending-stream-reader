@@ -8,7 +8,6 @@ describe PromoteVideo do
   let(:mention) {
     mock.tap do |m|
       Mention.stub(:new).with(tweet).and_return(m)
-      m.stub :valid? => true
       m.stub :spam? => false
       m.stub :english? => true
       m.stub :video => mock(:uid => 'abc', :source => 'youtube')
@@ -24,7 +23,7 @@ describe PromoteVideo do
 
   describe ".perform" do
     it "ignores invalid mention" do
-      mention.should_receive(:valid?).and_return(false)
+      Mention.stub(:new).with(tweet).and_throw(:invalid_raw)
       trending.should_not_receive :promote_video
 
       subject.perform tweet
