@@ -64,9 +64,29 @@ describe Video do
     end
   end
 
+  describe "#acceptable_spammer_count" do
+    it "has a min of 2" do
+      subject.stub :mentioner_count => 1
+
+      subject.acceptable_spammer_count.should == 2
+    end
+
+    it "increases as mentioner count increases" do
+      non_popular_video = Video.new 'abc'
+      non_popular_video.stub :mentioner_count => 10
+
+      popular_video = Video.new 'def'
+      popular_video.stub :mentioner_count => 100
+
+      popular_video.acceptable_spammer_count.should >
+        non_popular_video.acceptable_spammer_count
+    end
+  end
+
   describe "#spammed_by_others?" do
-    it "is true if we have more than 2 spammers" do
-      subject.stub :spammer_count => 3
+    it "is true if we have more than acceptable spammer count" do
+      subject.stub :acceptable_spammer_count => 2
+      subject.stub :spammer_count => subject.acceptable_spammer_count+1
 
       subject.should be_spammed_by_others
     end

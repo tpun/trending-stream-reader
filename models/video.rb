@@ -50,8 +50,12 @@ module Aji
       expire_keys
     end
 
+    def acceptable_spammer_count
+      2 + mentioner_count/30
+    end
+
     def spammed_by_others?
-      spammer_count > 2
+      spammer_count > acceptable_spammer_count
     end
 
     def spam?
