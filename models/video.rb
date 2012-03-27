@@ -2,6 +2,8 @@ module Aji
   class Video
     attr_reader :uid, :source, :keys
     def initialize uid, source='youtube'
+      raise "nil uid or source!" if uid.nil? or source.nil?
+
       @uid = uid
       @source = source
       prefix = "video:#{@source}[#{@uid}]"

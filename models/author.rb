@@ -2,12 +2,14 @@ module Aji
   class Author
     attr_reader :uid, :source, :friends, :followers
     def initialize uid, source, count
+      raise "nil uid or source!" if uid.nil? or source.nil?
+
       @uid = uid
       @source = source
 
       # count only
-      @friends = count[:friends]
-      @followers = count[:followers]
+      @friends = count[:friends] || 0
+      @followers = count[:followers] || 0
     end
 
     def relevance_ratio # 0.0 .. 3.0
