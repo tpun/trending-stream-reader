@@ -31,7 +31,7 @@ module Aji
     end
 
     def valid?
-      !@video.uid.empty? and !@author.uid.empty?
+      !@video.uid.nil? and !@author.uid.nil?
     end
 
     def mark_spam
