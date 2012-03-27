@@ -51,7 +51,7 @@ module Aji
     end
 
     def spammed_by_others?
-      (spammer_count > 2) or (mention_count - mentioner_count > 10)
+      spammer_count > 2
     end
 
     def spam?
