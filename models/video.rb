@@ -51,7 +51,7 @@ module Aji
     end
 
     def acceptable_spammer_count
-      2 + mentioner_count/30
+      2 + (mentioner_count / 30)
     end
 
     def spammed_by_others?
