@@ -107,7 +107,7 @@ describe Video do
   describe "#mark_spam" do
     it "adds self to global spam list" do
       Aji.redis.should_receive(:zadd).
-        with(Video::Spam_Key, an_instance_of(Fixnum), subject.uid)
+        with(Video::Spam_Key, subject.spammer_count, subject.uid)
 
       subject.mark_spam
     end

@@ -63,7 +63,7 @@ module Aji
     end
 
     def mark_spam
-      Aji.redis.zadd Spam_Key, Time.now.to_i, uid
+      Aji.redis.zadd Spam_Key, spammer_count, uid
       puts "SPAM: #{self.to_s}"
 
       # Remove self from trending videos
