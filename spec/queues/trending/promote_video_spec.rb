@@ -1,4 +1,5 @@
 require_relative '../../../app.rb'
+include Aji
 include Aji::Queues::Trending
 
 describe PromoteVideo do
