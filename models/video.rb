@@ -3,6 +3,7 @@ module Aji
     attr_reader :uid, :source, :keys
     def initialize uid, source='youtube'
       raise "nil uid or source!" if uid.nil? or source.nil?
+      raise "#{uid} was marked spam before." if spam?
 
       @uid = uid
       @source = source

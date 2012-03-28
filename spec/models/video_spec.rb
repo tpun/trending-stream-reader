@@ -9,6 +9,18 @@ describe Video do
   let(:mention) { Mention.new raw}
   let(:nonspammer) { Author.new('nonspammer', 'twitter', {friends: 10, followers: 10}) }
 
+  describe "#initialize" do
+    it "raises if uid is nil" do
+      lambda { Video.new nil }.should raise_error
+    end
+
+    it "raises if video was marked spam before" do
+      Video.any_instance.stub :spam? => true
+
+      lambda { Video.new "abc" }.should raise_error
+    end
+  end
+
   describe "#spammed_by?" do
     it "returns true if given mentioner has mentioned given video more than twice" do
       3.times { subject.mentioned_in mention }
